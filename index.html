@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oñoo - Sistema de Ventas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <div class="brand"><strong>Oñoo 🐟</strong></div>
+    <button class="btn-sales-modal" onclick="toggleSalesModal()">📊 Ventas</button>
+  </header>
+
+  <main class="grid">
+    <!-- Catálogo Separado por Categorías -->
+    <section class="card">
+      <h2>🍽️ Platos</h2>
+      <div class="menu-grid" id="dishesContainer"></div>
+
+      <h2 class="drinks-title">🥤 Bebidas</h2>
+      <div class="menu-grid" id="drinksContainer"></div>
+    </section>
+
+    <!-- Orden Actual -->
+    <section class="card">
+      <h2>Orden Actual</h2>
+      <table>
+        <thead>
+          <tr><th>Producto</th><th>Cant.</th><th>Subtotal</th><th></th></tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+      
+      <div class="order-total">
+        Total Orden: S/ <span id="orderTotal">0.00</span>
+      </div>
+
+      <div class="payment-selector">
+        <label for="paymentMethod">Método de Pago:</label>
+        <select id="paymentMethod" onchange="toggleCashBox()">
+          <option value="Efectivo">💵 Efectivo</option>
+          <option value="Yape/Plin">📱 Yape / Plin</option>
+          <option value="Tarjeta">💳 Tarjeta</option>
+        </select>
+      </div>
+
+      <!-- Calculadora de Vuelto (Solo visible en Efectivo) -->
+      <div id="cashCalculator" class="cash-box">
+        <label for="cashReceived">Con cuánto paga (S/):</label>
+        <input type="number" id="cashReceived" placeholder="Ej: 50.00" step="0.50" oninput="calculateChange()">
+        
+        <div class="quick-bills">
+          <button type="button" onclick="setBill(10)">S/ 10</button>
+          <button type="button" onclick="setBill(20)">S/ 20</button>
+          <button type="button" onclick="setBill(50)">S/ 50</button>
+          <button type="button" onclick="setBill(100)">S/ 100</button>
+        </div>
+
+        <div class="change-display">
+          <span>Vuelto a entregar:</span>
+          <strong id="changeAmount">S/ 0.00</strong>
+        </div>
+      </div>
+
+      <button class="btn btn-pay" onclick="checkout()">Registrar y Cobrar Venta</button>
+    </section>
+  </main>
+
+  <!-- Historial de Ventas Guardadas -->
+  <section class="card history-section">
+    <div class="history-header">
+      <h2>Historial de Ventas Anteriores</h2>
+      <div class="actions">
+        <button class="btn btn-excel" onclick="exportToExcel()">📥 Exportar a Excel</button>
+        <button class="btn btn-clear" onclick="clearHistory()">Borrar Historial</button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th># Venta</th>
+          <th>Fecha y Hora</th>
+          <th>Detalle de Consumo</th>
+          <th>Método</th>
+          <th>Total Cobrado</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+  </section>
+
+  <!-- Ventana Emergente (Modal) de Resumen de Ventas -->
+  <div id="salesModal" class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📊 Resumen de Ventas</h2>
+        <button class="btn-close-modal" onclick="toggleSalesModal()">✕</button>
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-box today">
+          <span class="stat-label">Ventas de Hoy</span>
+          <span class="stat-value">S/ <span id="todayTotal">0.00</span></span>
+        </div>
+        <div class="stat-box month">
+          <span class="stat-label">Ventas del Mes</span>
+          <span class="stat-value">S/ <span id="monthTotal">0.00</span></span>
+        </div>
+        <div class="stat-box total">
+          <span class="stat-label">Total Histórico</span>
+          <span class="stat-value">S/ <span id="grandTotal">0.00</span></span>
+        </div>
+      </div>
+
+      <div class="payment-breakdown">
+        <h3>Desglose de Hoy por Método</h3>
+        <div class="breakdown-row">
+          <span>💵 Efectivo Hoy:</span>
+          <strong>S/ <span id="cashToday">0.00</span></strong>
+        </div>
+        <div class="breakdown-row">
+          <span>📱 Yape / Plin Hoy:</span>
+          <strong>S/ <span id="yapeToday">0.00</span></strong>
+        </div>
+        <div class="breakdown-row">
+          <span>💳 Tarjeta Hoy:</span>
+          <strong>S/ <span id="cardToday">0.00</span></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
